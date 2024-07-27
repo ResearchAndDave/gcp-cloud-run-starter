@@ -193,3 +193,11 @@ gcloud alpha builds triggers import --region $REGION \
 ```
 gcloud deploy apply --file=cicd/clouddeploy.yaml --region=$REGION
 ```
+Reference: https://cloud.google.com/deploy/docs/deploy-app-run
+
+### Test Out Cloud Run From Proxy
+```
+gcloud beta run services list
+gcloud beta run services proxy gcp-cloud-run-starter-dev	
+ --port=8080
+```
