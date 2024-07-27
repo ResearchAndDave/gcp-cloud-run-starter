@@ -1,0 +1,14 @@
+apiVersion: serving.knative.dev/v1
+kind: Service
+metadata:
+  name: gcp-cloud-run-starter-dev
+spec:
+  template:
+    spec:
+      containers:
+      - image: gcp-cloud-run-starter
+        ports:
+          - containerPort: 8080
+        env:
+        - name: ENVIRONMENT
+          value: "DEVELOPMENT"

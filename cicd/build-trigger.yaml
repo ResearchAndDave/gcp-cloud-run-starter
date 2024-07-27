@@ -1,0 +1,11 @@
+# Creates Second Generation Build Trigger
+name: generated-trigger-gcp-cloud-run-starter
+description: Generated Build Trigger for Google Cloud Run Starter
+filename: cloudbuild.yaml
+repositoryEventConfig:
+  push:
+    branch: ^main$
+  repository: projects/gcp-cloud-run-starter/locations/us-central1/connections/github-connection/repositories/gcp-cloud-run-starter
+  repositoryType: GITHUB
+serviceAccount: projects/gcp-cloud-run-starter/serviceAccounts/221661864260-compute@developer.gserviceaccount.com
+

@@ -1,0 +1,39 @@
+steps:
+ # Install dependencies
+- name: python
+  entrypoint: pip
+  args: ["install", "-r", "requirements.txt", "--user"]
+
+# Build and tag using commit sha
+- name: 'gcr.io/cloud-builders/docker'
+  args: ['build', 
+         '.', 
+         '-t', 'us-central1-docker.pkg.dev/$PROJECT_ID/$_ARTIFACT_REPOSITORY/$_IMAGE_NAME:$COMMIT_SHA', 
+         '-t', 'us-central1-docker.pkg.dev/$PROJECT_ID/$_ARTIFACT_REPOSITORY/$_IMAGE_NAME:latest', 
+         '-f', 
+         'Dockerfile']
+
+# Push the container image
+- name: 'gcr.io/cloud-builders/docker'
+  args: ['push', 'us-central1-docker.pkg.dev/$PROJECT_ID/$_ARTIFACT_REPOSITORY/$_IMAGE_NAME','--all-tags']
+
+# Create release in Google Cloud Deploy
+- name: gcr.io/google.com/cloudsdktool/cloud-sdk
+  entrypoint: gcloud
+  args:
+    [
+      "deploy", "releases", "create", "rel-${SHORT_SHA}",
+      "--delivery-pipeline", "$_IMAGE_NAME-pipeline",
+      "--region", "us-central1",
+      "--annotations", "commitId=${REVISION_ID}",
+      "--skaffold-file", "cicd/skaffold.yaml",
+      "--images", "$_IMAGE_NAME=us-central1-docker.pkg.dev/$PROJECT_ID/$_ARTIFACT_REPOSITORY/$_IMAGE_NAME:$COMMIT_SHA"
+    ]
+
+options:
+  logging: CLOUD_LOGGING_ONLY
+
+# Global Variables
+substitutions:
+  _ARTIFACT_REPOSITORY: docker-repository
+  _IMAGE_NAME: gcp-cloud-run-starter
