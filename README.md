@@ -193,8 +193,3 @@ gcloud alpha builds triggers import --region $REGION \
 ```
 gcloud deploy apply --file=cicd/clouddeploy.yaml --region=$REGION
 ```
-
-<!-- ### Give Access to Pipeline 
-```
-gcloud deploy delivery-pipelines set-iam-policy $PIPELINE_NAME policy.yaml --region=$REGION
-``` -->
