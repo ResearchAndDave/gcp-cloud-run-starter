@@ -7,16 +7,47 @@ profiles:
   manifests:
     rawYaml:
     - gcp-cloud-run-starter-dev.yaml
+  verify:
+  - name: check-dev-health
+    container:
+      name: gcloud-curl-dev
+      image: google/cloud-sdk:slim
+      command: ["/bin/sh", "-c"]
+      args:
+      - |
+        set -e # exit on error
+        echo "Fetching URL for gcp-cloud-run-starter-dev in project $PROJECT_ID and region us-central1..."
+        SERVICE_URL=$(gcloud run services describe gcp-cloud-run-starter-dev --platform managed --region us-central1 --project $PROJECT_ID --format='value(status.url)')
+        if [ -z "$SERVICE_URL" ]; then
+          echo "Failed to get service URL for gcp-cloud-run-starter-dev"
+          exit 1
+        fi
+        echo "Service URL for dev: $SERVICE_URL"
+        echo "Curling $SERVICE_URL/healthz..."
+        curl -f $SERVICE_URL/healthz
+        echo "Dev health check successful."
 - name: prod
   manifests:
     rawYaml:
     - gcp-cloud-run-starter-prod.yaml
-verify:
-  - name: alpine-wget
+  verify:
+  - name: check-prod-health
     container:
-      name: alpine-wget
-      image: alpine:3.15.4
-      command: ["/bin/sh"]
-      args: ["-c", "wget http://www.google.com"]
+      name: gcloud-curl-prod
+      image: google/cloud-sdk:slim
+      command: ["/bin/sh", "-c"]
+      args:
+      - |
+        set -e # exit on error
+        echo "Fetching URL for gcp-cloud-run-starter-prod in project $PROJECT_ID and region us-central1..."
+        SERVICE_URL=$(gcloud run services describe gcp-cloud-run-starter-prod --platform managed --region us-central1 --project $PROJECT_ID --format='value(status.url)')
+        if [ -z "$SERVICE_URL" ]; then
+          echo "Failed to get service URL for gcp-cloud-run-starter-prod"
+          exit 1
+        fi
+        echo "Service URL for prod: $SERVICE_URL"
+        echo "Curling $SERVICE_URL/healthz..."
+        curl -f $SERVICE_URL/healthz
+        echo "Prod health check successful."
 deploy:
   cloudrun: {}
