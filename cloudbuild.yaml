@@ -4,6 +4,11 @@ steps:
   entrypoint: pip
   args: ["install", "-r", "requirements.txt", "--user"]
 
+# Run Tests
+- name: python # Using the same python environment where dependencies were installed
+  entrypoint: python
+  args: ["-m", "pytest", "./tests"]
+
 # Build and tag using commit sha
 - name: 'gcr.io/cloud-builders/docker'
   args: ['build', 
