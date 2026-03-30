@@ -17,7 +17,7 @@ MarkupSafe==2.1.5
 mdurl==0.1.2
 pydantic==2.8.2
 pydantic_core==2.20.1
-Pygments==2.18.0
+Pygments==2.20.0
 python-dotenv==1.0.1
 python-multipart==0.0.18
 PyYAML==6.0.1
